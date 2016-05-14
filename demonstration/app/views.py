@@ -9,19 +9,32 @@ def index(request):
 def test(request):
 	return HttpResponse('My second view!')
 def profile(request):
-	jsonList = []
-	req = requests.get('https://api.github.com/users/DrkSephy')
-	jsonList.append(json.loads(req.content.decode('utf-8')))
 	parsedData = []
-	userData = {}
-	for data in jsonList:
-		userData['name'] = data['name']
-		userData['blog'] = data['blog']
-		userData['email'] = data['email']
-		userData['public_gists'] = data['public_gists']
-		userData['public_repos'] = data['public_repos']
-		userData['avatar_url'] = data['avatar_url']
-		userData['followers'] = data['followers']
-		userData['following'] = data['following']
-		parsedData.append(userData)
+	if request.method == 'POST':
+		try:
+			username = request.POST.get('user')
+			req = requests.get('https://api.github.com/users/' + username)
+			jsonList = []
+			jsonList.append(json.loads(req.content.decode('utf-8')))
+			userData = {}
+			for data in jsonList:
+				userData['name'] = data['name']
+				userData['blog'] = data['blog']
+				userData['email'] = data['email']
+				userData['public_gists'] = data['public_gists']
+				userData['public_repos'] = data['public_repos']
+				userData['avatar_url'] = data['avatar_url']
+				userData['followers'] = data['followers']
+				userData['following'] = data['following']
+				parsedData.append(userData)
+		except:
+			userData['name'] = 'n/a'
+			userData['blog'] = 'n/a'
+			userData['email'] = 'n/a'
+			userData['public_gists'] = 'n/a'
+			userData['public_repos'] = 'n/a'
+			userData['avatar_url'] = 'n/a'
+			userData['followers'] = 'n/a'
+			userData['following'] = 'n/a'
+			parsedData.append(userData)
 	return render(request, 'app/profile.html', {'data': parsedData})
