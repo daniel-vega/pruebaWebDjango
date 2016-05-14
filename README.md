@@ -1,1 +1,1 @@
-"# pruebaWebDjango" 
+Repositorio con django 1.9 para construír una página web simple
